@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: golang
+  labels:
+    app: golang-app
+spec:
+  minReadySeconds: 10
+  replicas: 2
+  selector:
+    matchLabels:
+      app: golang-app
+  strategy:
+    rollingUpdate:
+      maxSurge: 30%
+      maxUnavailable: 30%
+  template:
+    metadata:
+      name: golang
+      labels:
+        app: golang-app
+    spec:
+      containers:
+        - name: golang
+          image: ${{ secrets.DOCKERHUB_USERNAME }}/golang-app:latest
+          resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+          ports:
+            - containerPort: 8080
+              name: golang
+              protocol: "TCP"
